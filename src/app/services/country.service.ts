@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { first } from 'rxjs';
+import { first, map } from 'rxjs';
+import { ICountry } from '../models/country.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,24 @@ export class CountryService {
 
   constructor() { }
 
-  private url_Base = 'https://restcountries.com/v3.1/'
+  private url_Base = 'https://restcountries.com/v3.1'
 
+
+  getCountriesBySubregion(subregion:string){
+
+    return this.httpCLient.get<any[]>(`${this.url_Base}/subregion/${subregion}`)
+    .pipe(
+      first(),
+      map( (countries:any[]) => countries.map( country =>{
+        return {
+          name : country.name.common,
+          flag : country.flags.png,
+          lating : country.lating
+
+        } as ICountry
+      }))
+    )
+  }
 
   getAllSubregions(){
 
