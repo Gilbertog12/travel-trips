@@ -1,5 +1,5 @@
 export interface ICountry {
-  name:string;
-  flag : string ;
-  lating : number[]
+  name: string;
+  flag: string;
+  latlng: number[]
 }

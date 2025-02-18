@@ -23,6 +23,7 @@ public listCountriesToVisit : ICountry[] = []
 public subregion$ : Observable<string[]> = this.countryService.getAllSubregions()
 public subregionSelected = 'South America'
 public loadCountries = true
+public markers :google.maps.LatLngLiteral[] = []
 
 
 ngOnInit(): void {
@@ -60,6 +61,23 @@ drop(event : CdkDragDrop<ICountry[]>){
       event.previousIndex,
       event.currentIndex
     )
+    if(event.previousContainer.id == 'Icountries' && event.container.id =='IcountriesToVisit'){
+
+      console.log(this.listCountriesToVisit)
+      this.markers.push({
+
+        lat : this.listCountriesToVisit[event.currentIndex].latlng[0],
+        lng : this.listCountriesToVisit[event.currentIndex].latlng[1]
+      })
+    }else if(event.previousContainer.id == 'IcountriesToVisit' && event.container.id =='Icountries'){
+
+      const indexMarker = this.markers.findIndex( marker =>
+        marker.lat == this.listCountries[event.currentIndex].latlng[0]
+        && marker.lng == this.listCountries[event.currentIndex].latlng[1]
+      );
+      this.markers.splice(indexMarker, 1)
+
+    }
   }
 }
 }

@@ -12,31 +12,25 @@ export class CountryService {
 
   constructor() { }
 
-  private url_Base = 'https://restcountries.com/v3.1'
+  private URL_BASE = 'https://restcountries.com/v3.1'
+  private http = inject(HttpClient);
 
-
-  getCountriesBySubregion(subregion:string){
-
-    return this.httpCLient.get<any[]>(`${this.url_Base}/subregion/${subregion}`)
-    .pipe(
+  getCountriesBySubregion(subregion: string){
+    return this.http.get<any[]>(`${this.URL_BASE}/subregion/${subregion}`).pipe(
       first(),
-      map( (countries:any[]) => countries.map( country =>{
+      map( (countries: any[]) => countries.map( country => {
         return {
-          name : country.name.common,
-          flag : country.flags.png,
-          lating : country.lating
-
+          name: country.name.common,
+          flag: country.flags.png,
+          latlng: country.latlng
         } as ICountry
       }))
     )
   }
 
-  getAllSubregions(){
 
-    return this.httpCLient.get<string[]>('/data/subregions.json')
-    .pipe(
-      first()
-    )
+  getAllSubregions(){
+    return this.http.get<string[]>('/data/subregions.json').pipe(first())
   }
 
 }
