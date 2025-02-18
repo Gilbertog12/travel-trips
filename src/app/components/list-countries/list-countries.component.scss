@@ -1,0 +1,29 @@
+.list-countries{
+
+  &__drop-list{
+
+    min-height: 300px;
+
+  }
+
+  &__country{
+    height: 60px;
+    cursor: grab;
+
+
+    img{
+      height: 58px;
+    }
+  }
+}
+
+
+.cdk-drop-list-dragging{
+
+  cursor: grabbing;
+}
+
+.cdk-drag-preview{
+  cursor: grabbing;
+  overflow: hidden;
+}

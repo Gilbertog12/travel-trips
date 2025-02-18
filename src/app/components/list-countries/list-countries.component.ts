@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { MapCountriesComponent } from '../components/map-countries/map-countries.component';
 import { CountryService } from '../../services/country.service';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ICountry } from '../../models/country.model';
+import { CdkDropList,CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
 
 @Component({
   selector: 'app-list-countries',
-  imports: [MapCountriesComponent, AsyncPipe , FormsModule],
+  imports: [MapCountriesComponent, AsyncPipe , FormsModule , CdkDropList,CdkDrag],
   templateUrl: './list-countries.component.html',
   styleUrl: './list-countries.component.scss'
 })
@@ -20,6 +21,7 @@ public listCountriesToVisit : ICountry[] = []
 
 public subregion$ : Observable<string[]> = this.countryService.getAllSubregions()
 public subregionSelected = 'South America'
+public loadCountries = true
 
 
 ngOnInit(): void {
@@ -29,14 +31,35 @@ ngOnInit(): void {
 }
 
 filterCountries() {
+  this.loadCountries = false
   console.log(this.subregionSelected);
-  this.countryService.getCountriesBySubregion(this.subregionSelected).subscribe({
-    next: (countries: ICountry[]) => {
-        this.listCountries = countries.filter(country => !this.listCountriesToVisit.some(countryVisit => country.name == countryVisit.name))
-        console.log(this.listCountries);
-
+  this.countryService.getCountriesBySubregion(this.subregionSelected)
+  .pipe(
+    finalize( () => this.loadCountries = true)
+  ).subscribe({
+    next : ( countries : ICountry[]) => {
+      this.listCountries = countries
+      .filter(country => !this.listCountriesToVisit.some
+        (countryVisit => country.name == countryVisit.name))
+        console.log(this.listCountries)
     }
   })
+}
+
+
+drop(event : CdkDragDrop<ICountry[]>){
+  if(event.previousContainer === event.container){
+
+    moveItemInArray(event.container.data , event.previousIndex ,event.currentIndex)
+
+  }else{
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    )
+  }
 }
 }
 
