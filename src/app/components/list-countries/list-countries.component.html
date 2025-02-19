@@ -3,8 +3,17 @@
 
     <div class="row mb-2">
       <div class="col-12">
+        @defer{
 
-        <app-map-countries [markers]="markers"></app-map-countries>
+          <app-map-countries [markers]="markers"></app-map-countries>
+        }@loading {
+
+          <div class="row justify-content-center aling-items-center h-100">
+            <div class="col-12 spinner-border" role="status">
+              <span class="visually-hidden">Loading.....</span>
+            </div>
+          </div>
+        }
       </div>
     </div>
 
@@ -120,18 +129,22 @@
     </div>
         <ng-template #templateCountry let-country>
 
+          @defer (on viewport) {
 
+            <div  class="row g-0 list-countries__country border mb-2 mt-2">
+              <div class="col-3">
+                <img class="img-fluid" [src]="country.flag" [alt]="country.name">
+              </div>
 
-
-          <div  class="row g-0 list-countries__country border mb-2 mt-2">
-            <div class="col-3">
-              <img class="img-fluid" [src]="country.flag" [alt]="country.name">
+              <div class="col-9 text-center align-content-center h5">
+                <span>{{country.name}}</span>
+              </div>
             </div>
+          }@placeholder {
+            <span class="d-block"></span>
+          }
 
-            <div class="col-9 text-center align-content-center h5">
-              <span>{{country.name}}</span>
-            </div>
-          </div>
+
 
 
 
